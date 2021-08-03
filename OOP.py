@@ -23,11 +23,10 @@ class Board:
 
 	def generateRandomChests(self, numChests):
 		# Create a list of chest data structures (two-item lists of x, y int coordinates).
-		self.chests = [[0,0],[0,1],[1,0]]
-		#while len(self.chests) < numChests:
-		#	newChest = [random.randint(0, 59), random.randint(0, 14)]
-		#	if newChest not in self.chests:  # Make sure a chest is not already here.
-		#		self.chests.append(newChest)
+		while len(self.chests) < numChests:
+			newChest = [random.randint(0, 59), random.randint(0, 14)]
+			if newChest not in self.chests:  # Make sure a chest is not already here.
+				self.chests.append(newChest)
 
 	def makeMove(self, x, y):
 		# Change the board data structure with a sonar device character. Remove treasure chests from the chests list
