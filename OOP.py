@@ -2,7 +2,6 @@ import random
 import sys
 import math
 
-
 class Board:
 	board = []
 	chests = []
