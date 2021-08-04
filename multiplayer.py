@@ -2,6 +2,8 @@ import wsgiref.simple_server
 import urllib.parse
 import http.cookies
 import random
+import Web_OOP
+
 from string import ascii_uppercase, digits
 
 # Necessary to globalize, since values should
@@ -11,6 +13,10 @@ player2 = None
 player1_sonar_choice = None
 player2_sonar_choice = None
 sonars = None
+ui = Web_OOP.UI()
+board = Web_OOP.Board()
+board.generateRandomChests(3)
+board.createBoard()
 
 def app(env, sres):
 	global player1
@@ -18,6 +24,8 @@ def app(env, sres):
 	global player1_sonar_choice
 	global player2_sonar_choice
 	global sonars
+	global ui
+	global board
 
 	headers = [('Content-Type', 'text/html; charset=utf-8')]
 	path = env["PATH_INFO"]
@@ -144,16 +152,27 @@ def app(env, sres):
 		# Play game
 		elif path == "/game":
 			sres('200 OK', headers)
-			
 			# Choose either player's choice
 			if sonars == None:
 				sonars = random.choice([player1_sonar_choice, player2_sonar_choice])
-
-			return ["Insert game here!".encode()]
+			if not params:
+				return [ui.initialize().encode()]
+			elif "instr" in params and params["instr"][0].lower() == "yes":
+				return [ui.showInstructions().encode()]
+			elif "x" and "y" in params:
+				x = params["x"][0]
+				y = params["y"][0]
+				message = ui.enterPlayerMove(x,y,board)
+				return [ui.printer(board,message).encode()]
+			else:
+				return [ui.printer(board,'').encode()]
 		elif path == "/":
 			sres('200 OK', headers)
 
 			return ["S O N A R !<br><a href='/wait'>Click here to join the game!</a>".encode()]	
+		elif path == "/index.css":
+			sres('200 OK', headers)
+			return [open("index.css").read().encode()]
 		else:
 			sres('404 NOT FOUND', headers)
 
