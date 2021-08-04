@@ -9,6 +9,8 @@ class Board:
 	previousMoves = []
 
 	def createBoard(self):
+		self.board = []
+		self.previousMoves = []
 		for x in range(60):  # The main list is a list of 60 lists.
 			self.board.append([])
 			for y in range(15):  # Each list in the main list has 15 single-character strings.
@@ -23,6 +25,7 @@ class Board:
 
 	def generateRandomChests(self, numChests):
 		# Create a list of chest data structures (two-item lists of x, y int coordinates).
+		self.chests = []
 		while len(self.chests) < numChests:
 			newChest = [random.randint(0, 59), random.randint(0, 14)]
 			if newChest not in self.chests:  # Make sure a chest is not already here.
@@ -176,16 +179,16 @@ Press enter to continue...''')
 
 
 def container():
-	# Game setup
-	ui = UI()
-	board = Board()
-	board.generateRandomChests(3)
-	board.createBoard()
-
-	ui.initialize()
-	ui.printer(board)
 
 	while True:
+		# Game setup
+		ui = UI()
+		board = Board()
+		board.generateRandomChests(3)
+		board.createBoard()
+
+		ui.initialize()
+		ui.printer(board)
 
 		sonarDevices = 20
 
