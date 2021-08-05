@@ -111,16 +111,17 @@ class UI:
 
 	def enterPlayerMove(self, x, y, board):
 		# Let the player enter their move. Return a two-item list of int xy coordinates.
+		valid = False
 		if x.isdigit() and y.isdigit():
 			x = int(x)
 			y = int(y)
 			valid, message = board.validateMove(x, y)
 			if valid:
-				return board.makeMove(x, y)
+				return valid, board.makeMove(x, y)
 			else:
-				return(message)
+				return valid, (message)
 		else:
-			return 'You did not input numbers'
+			return valid, 'You did not input numbers'
 
 	def showInstructions(self):
 		return('''<head><link href="index.css" rel="stylesheet"/></head>Instructions:

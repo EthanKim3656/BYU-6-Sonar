@@ -17,6 +17,7 @@ ui = Web_OOP.UI()
 board = Web_OOP.Board()
 board.generateRandomChests(3)
 board.createBoard()
+turn = True
 
 def app(env, sres):
 	global player1
@@ -26,6 +27,7 @@ def app(env, sres):
 	global sonars
 	global ui
 	global board
+	global turn
 
 	headers = [('Content-Type', 'text/html; charset=utf-8')]
 	path = env["PATH_INFO"]
@@ -159,10 +161,27 @@ def app(env, sres):
 				return [ui.initialize().encode()]
 			elif "instr" in params and params["instr"][0].lower() == "yes":
 				return [ui.showInstructions().encode()]
+			elif "instr" in params and params["instr"][0].lower() == "no":
+				return [ui.printer(board,'Welcome and Good Luck! Player 1 goes first!').encode()]
 			elif "x" and "y" in params:
-				x = params["x"][0]
-				y = params["y"][0]
-				message = ui.enterPlayerMove(x,y,board)
+				cookies = http.cookies.SimpleCookie()
+				cookies.load(env["HTTP_COOKIE"])
+				key = cookies["key"].value
+				if turn == True and player1 == key:
+					x = params["x"][0]
+					y = params["y"][0]
+					valid, message = ui.enterPlayerMove(x,y,board)
+					if valid:
+						turn = False
+				elif turn == False and player2 == key:
+					x = params["x"][0]
+					y = params["y"][0]
+					valid, message = ui.enterPlayerMove(x,y,board)
+					if valid:
+						turn = True
+				else:
+					message = 'Not your turn!'
+				#message = f'''This is the player1:{player1} cookie and player2:{player2} cookie and this is the input cookie:{key}'''
 				return [ui.printer(board,message).encode()]
 			else:
 				return [ui.printer(board,'').encode()]
