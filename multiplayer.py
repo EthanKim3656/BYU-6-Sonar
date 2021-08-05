@@ -147,7 +147,7 @@ def app(env, sres):
 					""".encode()]
 				
 				# Both players have chosen, redirect to game
-				return ["Both players have chosen!<br><a href='/game'>Redirect to game here!</a>".encode()]
+				return ["Both players have chosen!<br><a href='/game?instr'>Redirect to game here!</a>".encode()]
 			else:
 				return ["Sonar count has already been chosen, sorry!".encode()]
 
@@ -157,7 +157,7 @@ def app(env, sres):
 			# Choose either player's choice
 			if sonars == None:
 				sonars = random.choice([player1_sonar_choice, player2_sonar_choice])
-			if not params:
+			if "instr" in params:
 				return [ui.initialize().encode()]
 			elif "instr" in params and params["instr"][0].lower() == "yes":
 				return [ui.showInstructions().encode()]
@@ -178,9 +178,11 @@ def app(env, sres):
 					y = params["y"][0]
 					valid, message = ui.enterPlayerMove(x,y,board)
 					if valid:
-						turn = True
+						turn = True 
 				else:
-					message = 'Not your turn!'
+					message = 'Wait'
+				if len(board.chests) == 0:
+					message = 'Victory'
 				#message = f'''This is the player1:{player1} cookie and player2:{player2} cookie and this is the input cookie:{key}'''
 				return [ui.printer(board,message).encode()]
 			else:
@@ -192,6 +194,9 @@ def app(env, sres):
 		elif path == "/index.css":
 			sres('200 OK', headers)
 			return [open("index.css").read().encode()]
+		elif path == "/gameRefresh.js":
+			sres('200 OK', headers)
+			return [open("gameRefresh.js").read().encode()]
 		else:
 			sres('404 NOT FOUND', headers)
 
