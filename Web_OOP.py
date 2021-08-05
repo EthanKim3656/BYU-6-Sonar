@@ -77,7 +77,7 @@ class UI:
 		
 
 	def printer(self, board, message):
-		boardString = f'''<head><link href="index.css" rel="stylesheet"/></head>{message}'''
+		boardString = f'''<head><link href="index.css" rel="stylesheet"/></head><script src="gameRefresh.js"></script>{message}'''
 		# Draw the board data structure.
 		tensDigitsLine = '    '  # Initial space for the numbers down the left side of the board
 		for i in range(1, 6):
@@ -153,48 +153,5 @@ When you drop a sonar device directly on a chest, you retrieve it and the other 
 <a href='/game?instr=no'>Go to game</a>
 ''')
 
-
-def container():
-
-	while True:
-		# Game setup
-		ui = UI()
-		board = Board()
-		board.generateRandomChests(3)
-		board.createBoard()
-
-		ui.initialize()
-		ui.printer(board)
-
-		sonarDevices = 20
-
-		while sonarDevices > 0:
-			# Show sonar device and chest statuses.
-			print(f'You have {sonarDevices} sonar device(s) left. {len(board.chests)} treasure chest(s) remaining.')
-
-			moveResult = ui.enterPlayerMove(board)
-			if moveResult == 'You have found a sunken treasure chest!':
-				# Update all the sonar devices currently on the map.
-				for x, y in board.previousMoves:
-					board.makeMove(x, y)
-			ui.printer(board)
-			print(moveResult)
-
-			if len(board.chests) == 0:
-				print('You have found all the sunken treasure chests! Congratulations and good game!')
-				break
-
-			sonarDevices -= 1
-
-		if sonarDevices == 0:
-			print('We\'ve run out of sonar devices! Now we have to turn the ship around and head')
-			print('for home with treasure chests still out there! Game over.')
-			print('The remaining chests were here:')
-			for x, y in board.chests:
-				print(f' {x}, {y}')
-
-		print('Do you want to play again? (yes or no)')
-		if not input().lower().startswith('y'):
-			sys.exit()
 
 
